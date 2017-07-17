@@ -22,7 +22,17 @@ var getAll = (req, res) => {
 var getOne = (req, res) => {
   db.User.findById(req.params.id)
   .then(user => {
-    res.send(user)
+    user.getQuestions()
+    .then(userQ => {
+      user.getAnswers()
+      .then(userA => {
+        let tmp = {
+          question: userQ,
+          answer: userA
+        }
+        res.send(tmp)
+      })
+    })
   })
   .catch(err => {
     res.send(err)
