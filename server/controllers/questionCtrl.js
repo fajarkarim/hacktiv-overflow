@@ -5,9 +5,7 @@ var getAll = (req, res) => {
   db.Question.findAll({
     include: [
       { model: db.QuestionVote },
-      { model: db.Answer, include: [
-        { model: db.AnswerVote }
-      ]}
+      { model: db.Answer }
     ]
   })
   .then(questions => {
@@ -32,8 +30,7 @@ var create = (req, res) => {
   db.Question.create({
     title: req.body.title,
     content: req.body.content,
-    author: req.body.author,
-    question_vote: req.body.q_vote
+    author: req.body.author
   })
   .then(question => {
     res.send(question)
@@ -51,7 +48,6 @@ var edit = (req, res) => {
         title: req.body.title || question.title,
         content: req.body.content || question.content,
         author: req.body.author || question.author,
-        question_vote: req.body.q_vote || question.q_vote
       }
     )
     .then(() => res.send("user updated"))
@@ -68,8 +64,6 @@ var remove = (req, res) => {
     res.send(err)
   })
 }
-
-
 
 module.exports = {
   getAll,

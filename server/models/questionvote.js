@@ -5,5 +5,9 @@ module.exports = function(sequelize, DataTypes) {
     voter: DataTypes.INTEGER,
     QuestionId: DataTypes.INTEGER
   });
+
+  QuestionVote.associate = function (models) {
+    QuestionVote.belongsTo(models.Question)
+  }
   return QuestionVote;
 };

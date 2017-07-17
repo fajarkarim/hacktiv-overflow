@@ -29,20 +29,20 @@ var getOne = (req, res) => {
   })
 }
 
-// var create = (req, res) => {
-//   db.User.create({
-//     name: req.body.name,
-//     email: req.body.email,
-//     username: req.body.username,
-//     password: req.body.password
-//   })
-//   .then(user => {
-//     res.send(user)
-//   })
-//   .catch(err => {
-//     res.send(err)
-//   })
-// }
+var create = (req, res) => {
+  db.User.create({
+    name: req.body.name,
+    email: req.body.email,
+    username: req.body.username,
+    password: req.body.password
+  })
+  .then(user => {
+    res.send(user)
+  })
+  .catch(err => {
+    res.send(err)
+  })
+}
 
 var edit = (req, res) => {
   db.User.findById(req.params.id)
@@ -85,6 +85,10 @@ var register = (req, res) => {
     }
   })
   .then(created => {
+    let status = created[1]
+    if (!status) {
+      res.send("email already used")
+    }
     res.send(created)
   })
   .catch(err => {
@@ -102,7 +106,7 @@ var login = (req, res) => {
         username: user.username,
         role: user.role
       }, process.env.SECRET)
-      res.json(token)
+      res.send(token)
     }
     res.send('your pass is wrong')
   })
@@ -117,5 +121,6 @@ module.exports = {
   edit,
   remove,
   register,
-  login
+  login,
+  create
 }

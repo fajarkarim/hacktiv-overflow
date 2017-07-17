@@ -12,7 +12,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var questions = require('./routes/questions')
 var answers = require('./routes/answers')
-// var votes = require('./routes/votes')
+var questionvotes = require('./routes/questionvotes')
+var answervotes = require('./routes/answervotes')
 
 var app = express();
 
@@ -25,6 +26,8 @@ app.use('/', index);
 app.use('/api/users', users);
 app.use('/api/questions', questions);
 app.use('/api/answers', answers)
+app.use('/api/q_votes', questionvotes)
+app.use('/api/a_votes', answervotes)
 
 
 module.exports = app;

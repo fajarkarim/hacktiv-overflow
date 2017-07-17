@@ -1,12 +1,26 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Question = sequelize.define('Question', {
-    title: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      validate: {
+        len: {
+          args: [1,160],
+          msg: "max 160 character"
+        },
+        isAlphanumeric: {
+          args: true,
+          msg: "Just letters and numbers"
+        }
+      }
+    },
     content: DataTypes.STRING,
     author: DataTypes.INTEGER
   });
   Question.associate = function (models) {
+    Question.hasMany(models.Answer)
     Question.hasMany(models.QuestionVote)
+    Question.belongsTo(models.User, { foreignKey: 'author' })
   }
   return Question;
 };

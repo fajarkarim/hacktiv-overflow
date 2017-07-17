@@ -27,7 +27,7 @@ var create = (req, res) => {
   db.Answer.create({
     author: req.body.author,
     content: req.body.content,
-    answer_vote: req.body.a_vote
+    QuestionId: req.body.question_id
   })
   .then(answer => {
     res.send(answer)
@@ -44,11 +44,13 @@ var edit = (req, res) => {
       {
         author: req.body.author || answer.author,
         content: req.body.content || answer.content,
-        answer: req.body.a_vote || answer.a_vote
       }
     )
     .then(() => res.send("user updated"))
     .catch(err => res.send(err))
+  })
+  .catch(err => {
+    res.status(500).send(err)
   })
 }
 
@@ -61,8 +63,6 @@ var remove = (req, res) => {
     res.send(err)
   })
 }
-
-
 
 module.exports = {
   getAll,

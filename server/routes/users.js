@@ -7,6 +7,7 @@ var auth = require('../helpers/auth')
 router.get('/', userCtrl.getAll);
 router.get('/:id', auth.user, userCtrl.getOne);
 router.post('/login', userCtrl.login);
+// router.post('/', userCtrl.create);
 router.post('/register', userCtrl.register)
 router.put('/:id', auth.user, userCtrl.edit);
 router.delete('/:id', auth.admin, userCtrl.remove)
