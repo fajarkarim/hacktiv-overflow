@@ -1,11 +1,15 @@
 
 var db = require('../models')
+var bcrypt = require('bcrypt')
+var jwt = require('jsonwebtoken')
+var saltRounds = 10
 
 var getAll = (req, res) => {
   db.User.findAll({
-    include: [{
-      model: db.Question
-    }]
+    include: [
+      { model: db.Question },
+      { model: db.Answer }
+  ]
   })
   .then(users => {
     res.send(users)
@@ -25,20 +29,20 @@ var getOne = (req, res) => {
   })
 }
 
-var create = (req, res) => {
-  db.User.create({
-    name: req.body.name,
-    email: req.body.email,
-    username: req.body.username,
-    password: req.body.password
-  })
-  .then(user => {
-    res.send(user)
-  })
-  .catch(err => {
-    res.send(err)
-  })
-}
+// var create = (req, res) => {
+//   db.User.create({
+//     name: req.body.name,
+//     email: req.body.email,
+//     username: req.body.username,
+//     password: req.body.password
+//   })
+//   .then(user => {
+//     res.send(user)
+//   })
+//   .catch(err => {
+//     res.send(err)
+//   })
+// }
 
 var edit = (req, res) => {
   db.User.findById(req.params.id)
@@ -47,13 +51,15 @@ var edit = (req, res) => {
       {
         name: req.body.name || user.name,
         email: req.body.email || user.email,
+        role: req.body.role || user.role,
         username: req.body.username || user.username,
         password: req.body.password || user.password
       }
     )
-    .then(() => res.send("user updated"))
+    .then((user) => res.send(`${JSON.stringify(user)} updated`))
     .catch(err => res.send(err))
   })
+  .catch(err => res.send(err))
 }
 
 var remove = (req, res) => {
@@ -66,12 +72,50 @@ var remove = (req, res) => {
   })
 }
 
+var register = (req, res) => {
+  let hash = bcrypt.hashSync(req.body.password, saltRounds)
+  db.User.findOrCreate({
+    where: {email: req.body.email},
+    defaults: {
+      name: req.body.name,
+      email: req.body.email,
+      role: req.body.role,
+      username: req.body.username,
+      password: hash
+    }
+  })
+  .then(created => {
+    res.send(created)
+  })
+  .catch(err => {
+    res.send(err)
+  })
+}
 
+var login = (req, res) => {
+  db.User.findOne({ where: { email: req.body.email }})
+  .then(user => {
+    let pass = bcrypt.compareSync(req.body.password, user.password)
+    if (pass) {
+      var token = jwt.sign({
+        name: user.name,
+        username: user.username,
+        role: user.role
+      }, process.env.SECRET)
+      res.json(token)
+    }
+    res.send('your pass is wrong')
+  })
+  .catch(err => {
+    res.send(err)
+  })
+}
 
 module.exports = {
   getAll,
   getOne,
-  create,
   edit,
-  remove
+  remove,
+  register,
+  login
 }

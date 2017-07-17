@@ -2,7 +2,14 @@
 var db = require('../models')
 
 var getAll = (req, res) => {
-  db.Question.findAll()
+  db.Question.findAll({
+    include: [
+      { model: db.QuestionVote },
+      { model: db.Answer, include: [
+        { model: db.AnswerVote }
+      ]}
+    ]
+  })
   .then(questions => {
     res.send(questions)
   })
@@ -41,10 +48,10 @@ var edit = (req, res) => {
   .then(question => {
     question.update(
       {
-        title: req.body.name || question.name,
-        content: req.body.email || question.email,
-        author: req.body.username || question.username,
-        question_vote: req.body.password || question.password
+        title: req.body.title || question.title,
+        content: req.body.content || question.content,
+        author: req.body.author || question.author,
+        question_vote: req.body.q_vote || question.q_vote
       }
     )
     .then(() => res.send("user updated"))
