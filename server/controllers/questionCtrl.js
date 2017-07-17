@@ -5,7 +5,9 @@ var getAll = (req, res) => {
   db.Question.findAll({
     include: [
       { model: db.QuestionVote },
-      { model: db.Answer }
+      {
+        model: db.Answer, include: [{ model: db.AnswerVote }]
+      }
     ]
   })
   .then(questions => {

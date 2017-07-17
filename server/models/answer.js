@@ -1,11 +1,18 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Answer = sequelize.define('Answer', {
-    content: DataTypes.STRING,
-    author: {
-      type: DataTypes.INTEGER
+    content: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    QuestionId: DataTypes.INTEGER
+    author: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    QuestionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
   });
   Answer.associate = function (models) {
     Answer.hasMany(models.AnswerVote)
