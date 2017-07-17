@@ -22,9 +22,9 @@ var getAll = (req, res) => {
 var getOne = (req, res) => {
   db.User.findById(req.params.id)
   .then(user => {
-    user.getQuestions()
+    user.getQuestions({ include: [{model: db.QuestionVote}]})
     .then(userQ => {
-      user.getAnswers()
+      user.getAnswers({ include: [{model: db.AnswerVote}]})
       .then(userA => {
         let tmp = {
           question: userQ,
