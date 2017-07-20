@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="card">
-        <b-card>
-          lalal
-        </b-card>
-      </div>
+    <div class="row col">
+      <b-card header="Question"
+              class="col"
+              title="Card title"
+              sub-title="Card subtitle"
+              show-footer
+      >
+      </b-card>
     </div>
   </div>
 </template>
