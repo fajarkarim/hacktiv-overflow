@@ -1,31 +1,32 @@
 <template>
-  <div class="container">
+  <div class="container" id="login">
     <div class="row">
-      <b-card
-        class="mb-2"
-        title="Login"
-        sub-title=""
-        show-footer
-      >
+        <b-card
+          class="col-md-4 offset-4"
+          title="Login"
+          sub-title=""
+          show-footer
+        >
+        <b-form-fieldset
+        description=""
+        label="Email"
+        :feedback="userNotif"
+        :state="checkEmail"
+        :label-cols="3"
+        >
+        <b-form-input v-model="email" :state="checkEmail"></b-form-input>
+      </b-form-fieldset>
       <b-form-fieldset
-      description="Let us know your full name."
-      label="Enter your name"
-      :feedback="feedback"
-      :state="state"
-      :label-cols="3"
-      >
-      <b-form-input v-model="name" :state="state"></b-form-input>
-    </b-form-fieldset>
-    <b-form-fieldset
-    description="min 4 character"
-    label="Enter your password"
-    :feedback="feedback"
-    :state="state"
-    :label-cols="3"
-    >
-    <b-form-input type="password" v-model="name" :state="state"></b-form-input>
-  </b-form-fieldset>
-      </b-card>
+        description="min 4 character"
+        label="Password"
+        :feedback="passNotif"
+        :state="checkPass"
+        :label-cols="3"
+        >
+        <b-form-input type="password" v-model="password" :state="checkPass"></b-form-input>
+      </b-form-fieldset>
+      <b-button variant="primary" @click="verify">Submit</b-button>
+    </b-card>
     </div>
   </div>
 </template>
@@ -33,17 +34,49 @@
 <script>
 export default {
   computed: {
-    feedback () {
-      return this.name.length ? '' : 'Please enter something'
+    userNotif () {
+      return this.email.length ? '' : 'enter your email'
     },
-    state () {
-      return this.name.length >= 4 ? 'success' : 'warning'
+    passNotif () {
+      return this.password.length ? '' : 'enter your password'
+    },
+    checkEmail () {
+      var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      let isEmail = re.test(this.email)
+      return isEmail ? 'success' : 'warning'
+    },
+    checkPass () {
+      return this.password.length >= 4 ? 'success' : 'warning'
     }
   },
   data () {
     return {
-      name: ''
+      email: '',
+      password: ''
+    }
+  },
+  methods: {
+    verify: function () {
+      this.$http.post('http://localhost:3000/api/users/login', {
+        email: this.email,
+        password: this.password
+      })
+      .then((res) => {
+        let token = res.data
+        localStorage.setItem(`info`, JSON.stringify(token))
+        this.$router.push(`/users/${token.name}`)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
   }
 }
 </script>
+
+<style media="screen" scoped>
+#login {
+  padding-top: 100px;
+  padding-bottom: 190px;
+}
+</style>

@@ -22,9 +22,9 @@ var getAll = (req, res) => {
 var getOne = (req, res) => {
   db.User.findById(req.params.id)
   .then(user => {
-    user.getQuestions({ include: [{model: db.QuestionVote}]})
+    user.getQuestions({ include: [{model : db.QuestionVote}]})
     .then(userQ => {
-      user.getAnswers({ include: [{model: db.AnswerVote}]})
+      user.getAnswers()
       .then(userA => {
         let tmp = {
           question: userQ,
@@ -116,9 +116,13 @@ var login = (req, res) => {
         username: user.username,
         role: user.role
       }, process.env.SECRET)
-      res.send(token)
+      let info = {}
+      info.token = token
+      info.name = user.name
+      res.send(info)
+    } else {
+      res.send('your pass is wrong')
     }
-    res.send('your pass is wrong')
   })
   .catch(err => {
     res.send(err)
