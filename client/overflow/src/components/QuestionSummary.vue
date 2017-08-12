@@ -2,7 +2,14 @@
   <ul>
     <li v-for="item in usersQuestions">
       {{ item.name }}
-      <div v-for="q in item.Questions"> {{ q.content }}</div>
+      <div v-for="q in item.Questions">
+        <div class="">
+          {{ q.id }}
+        </div>
+        <div class="">
+          {{ q.content }}
+        </div>
+      </div>
     </li>
   </ul>
 </template>

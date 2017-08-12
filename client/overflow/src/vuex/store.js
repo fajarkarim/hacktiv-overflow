@@ -27,6 +27,15 @@ const store = new Vuex.Store({
       .catch(err => {
         console.log(err)
       })
+    },
+    getQuestions () {
+      axios.get('http://localhost:3000/api/questions')
+      .then(({ data }) => {
+        console.log(data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
   }
 })

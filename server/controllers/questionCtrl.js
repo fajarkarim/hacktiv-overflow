@@ -4,9 +4,18 @@ var db = require('../models')
 var getAll = (req, res) => {
   db.Question.findAll({
     include: [
-      { model: db.QuestionVote },
+      { model: db.User, attributes: ['name'] },
+      { model: db.QuestionVote, attributes: ['voter', 'type'] },
       {
-        model: db.Answer, include: [{ model: db.AnswerVote }]
+        model: db.Answer, attributes: ['content'] ,include: [
+          {
+            model: db.AnswerVote, attributes: ['voter', 'type'],
+            include: [{ model: db.User, attributes: ['name']}]
+          },
+          {
+            model: db.User, attributes: ['name']
+          },
+        ]
       }
     ]
   })

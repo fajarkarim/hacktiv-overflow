@@ -6,7 +6,8 @@
       <QuestionSummary
       :usersQuestions="usersQuestions">
       </QuestionSummary>
-      <button @click="getUsersQuestions" type="button" name="button">tes get question</button>
+      <button @click="getUsersQuestions" type="button" name="button">tes get users question</button>
+      <button @click="getQuestions" type="button" name="button">tes get question</button>
     </b-card>
   </div>
 </template>
@@ -25,6 +26,9 @@ export default {
   methods: {
     getUsersQuestions: function () {
       this.$store.dispatch('getUsersQuestions')
+    },
+    getQuestions: function () {
+      this.$store.dispatch('getQuestions')
     }
   }
 }
