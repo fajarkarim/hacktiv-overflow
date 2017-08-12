@@ -14,7 +14,7 @@ var create = (req, res) => {
     res.send(answer)
   })
   .catch(err => {
-    res.send(err)
+    res.status(500).send(err)
   })
 }
 //
