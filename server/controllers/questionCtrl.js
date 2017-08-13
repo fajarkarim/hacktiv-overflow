@@ -28,7 +28,26 @@ var getAll = (req, res) => {
 }
 
 var getOne = (req, res) => {
-  db.Question.findById(req.params.id)
+  db.Question.findOne(
+    {
+      where: { id: req.params.id },
+      include: [
+        { model: db.User, attributes: ['name']},
+        { model: db.QuestionVote, attributes: ['voter', 'type'] },
+        {
+          model: db.Answer, attributes: ['content'] ,include: [
+            {
+              model: db.AnswerVote, attributes: ['voter', 'type'],
+              include: [{ model: db.User, attributes: ['name']}]
+            },
+            {
+              model: db.User, attributes: ['name']
+            },
+          ]
+        }
+      ]
+    }
+  )
   .then(question => {
     res.send(question)
   })
