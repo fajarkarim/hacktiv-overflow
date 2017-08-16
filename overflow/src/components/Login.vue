@@ -25,7 +25,7 @@
         >
         <b-form-input type="password" v-model="password" :state="checkPass"></b-form-input>
       </b-form-fieldset>
-      <b-button variant="primary" @click="verify">Submit</b-button>
+      <b-button variant="primary" @click="doLogin">Submit</b-button>
     </b-card>
     </div>
   </div>
@@ -56,19 +56,12 @@ export default {
     }
   },
   methods: {
-    verify: function () {
-      this.$http.post('http://localhost:3000/api/users/login', {
+    doLogin () {
+      this.$store.dispatch('doLogin', {
         email: this.email,
         password: this.password
       })
-      .then((res) => {
-        let token = res.data
-        localStorage.setItem(`info`, JSON.stringify(token))
-        this.$router.push(`/users/${token.name}`)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      this.$router.push('/')
     }
   }
 }

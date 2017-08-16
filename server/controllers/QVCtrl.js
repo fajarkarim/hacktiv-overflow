@@ -6,7 +6,7 @@ var create = (req, res) => {
     where: { voter: req.body.voter_id },
     defaults: {
       type: req.body.type,
-      voter: req.body.voter_id,
+      voter: res.locals.userID,
       QuestionId: req.body.question_id
     }
   })

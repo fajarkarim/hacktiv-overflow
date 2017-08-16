@@ -2,12 +2,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
+axios.defaults.baseURL = 'http://localhost:3000/api'
 
 const store = new Vuex.Store({
   state: {
-    loggedIn: {},
+    login: {
+      status: '',
+      name: ''
+    },
     usersQuestions: [],
     questions: [],
     oneQuestion: {}
@@ -21,11 +26,20 @@ const store = new Vuex.Store({
     },
     setOneQuestion (state, payload) {
       state.oneQuestion = payload
+    },
+    setLogin (state, payload) {
+      state.login.name = payload.name
+      state.login.status = true
+    },
+    doLogout (state) {
+      state.login.status = false
+      state.login.name = ''
+      localStorage.removeItem('overflowToken')
     }
   },
   actions: {
     getUsersQuestions (context) {
-      axios.get('http://localhost:3000/api/users')
+      axios.get('/users')
       .then(({ data }) => {
         let filteredData = data.filter(d => {
           return d.Questions.length !== 0
@@ -37,7 +51,11 @@ const store = new Vuex.Store({
       })
     },
     getQuestions ({ commit }) {
-      axios.get('http://localhost:3000/api/questions')
+      axios.get('/questions', {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
       .then(({ data }) => {
         commit('setQuestions', data)
       })
@@ -46,7 +64,8 @@ const store = new Vuex.Store({
       })
     },
     getOneQuestion ({ commit }, payload) {
-      axios.get(`http://localhost:3000/api/questions/${payload.questID}`)
+      console.log(`----- masuk one question`)
+      axios.get(`/questions/${payload.questID}`)
       .then(({ data }) => {
         commit('setOneQuestion', data)
       })
@@ -54,47 +73,80 @@ const store = new Vuex.Store({
         console.log(err)
       })
     },
-    postQuestion ({ commit }, payload) {
-      axios.post(`http://localhost:3000/api/questions/`, {
-        title: 'ini contoh title',
-        content: 'ini contoh content',
-        author: this.$store.state.loggedIn.userID
+    postQuestion ({ state, dispatch }, payload) {
+      axios.post(`/questions/`, {
+        title: payload.title,
+        content: payload.content
+      }, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
       })
       .then(({data}) => {
         console.log(data)
+        dispatch('getQuestions', {
+          questID: payload.questID
+        })
       })
       .catch(err => {
         console.log(err)
       })
     },
     postAnswer ({ dispatch }, payload) {
-      axios.post(`http://localhost:3000/api/answers/`, {
-        author: 1,
-        content: 'post baru lagi dari yang paling baruu',
-        question_id: 4
+      axios.post(`/answers`, {
+        content: payload.content,
+        question_id: payload.questID
+      }, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
       })
       .then(({ data }) => {
         dispatch('getOneQuestion', {
           questID: payload.questID
         })
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(`------- masuk errror`)
+        console.log(err.message)
+      })
     },
-    register ({ commit }, payload) {
-      axios.post(`http://localhost:3000/api/users/`, {
-        email: 'ini contoh email',
-        name: 'nama',
-        username: 'ini username',
-        password: 'ini password'
+    doRegister ({ commit }, payload) {
+      console.log(payload)
+      console.log(`------ masuk atas reg`)
+      axios.post(`/users/register`, {
+        email: payload.email,
+        name: payload.name,
+        username: payload.username,
+        password: payload.password
+      })
+      .then(({ data }) => {
+        console.log(`--------- masuk register`)
+        console.log(data)
+      })
+      .catch(err => {
+        console.log(`---- masuk err`)
+        console.log(err.message)
+      })
+    },
+    doLogin ({ commit }, payload) {
+      axios.post(`/users/login`, {
+        email: payload.email,
+        password: payload.password
       })
       .then(({ data }) => {
         console.log(data)
+        localStorage.setItem('overflowToken', data.token)
+        commit('setLogin', {
+          name: data.name
+        })
       })
       .catch(err => {
         console.log(err)
       })
     }
-  }
+  },
+  plugins: [createPersistedState()]
 })
 
 export default store

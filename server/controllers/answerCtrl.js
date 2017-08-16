@@ -24,8 +24,9 @@ var getOne = (req, res) => {
 }
 
 var create = (req, res) => {
+  console.log(`----- masuk server create ${res.locals.userID}`);
   db.Answer.create({
-    author: req.body.author,
+    author: res.locals.userID,
     content: req.body.content,
     QuestionId: req.body.question_id
   })
@@ -42,7 +43,7 @@ var edit = (req, res) => {
   .then(answer => {
     answer.update(
       {
-        author: req.body.author || answer.author,
+        author: res.locals.userID || answer.author,
         content: req.body.content || answer.content,
       }
     )

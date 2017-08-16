@@ -2,7 +2,6 @@
 var db = require('../models')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
-var saltRounds = 10
 
 var getAll = (req, res) => {
   db.User.findAll({
@@ -83,18 +82,21 @@ var remove = (req, res) => {
 }
 
 var register = (req, res) => {
+  console.log(`-------- masuk register server`)
+  var saltRounds = 10
   let hash = bcrypt.hashSync(req.body.password, saltRounds)
+  console.log('ini hashnya ----------', hash);
   db.User.findOrCreate({
     where: {email: req.body.email},
     defaults: {
       name: req.body.name,
       email: req.body.email,
-      role: req.body.role,
       username: req.body.username,
       password: hash
     }
   })
   .then(created => {
+    console.log(`------- masuk created`);
     let status = created[1]
     if (!status) {
       res.send("email already used")
@@ -114,11 +116,13 @@ var login = (req, res) => {
       var token = jwt.sign({
         name: user.name,
         username: user.username,
-        role: user.role
+        role: user.role,
+        id: user.id
       }, process.env.SECRET)
       let info = {}
       info.token = token
       info.name = user.name
+      info.id = user.id
       res.send(info)
     } else {
       res.send('your pass is wrong')

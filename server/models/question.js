@@ -7,10 +7,6 @@ module.exports = function(sequelize, DataTypes) {
         len: {
           args: [1,160],
           msg: "max 160 character"
-        },
-        isAlphanumeric: {
-          args: true,
-          msg: "Just letters and numbers"
         }
       }
     },

@@ -2,6 +2,7 @@
 var db = require('../models')
 
 var getAll = (req, res) => {
+  console.log(res.locals.userID)
   db.Question.findAll({
     include: [
       { model: db.User, attributes: ['name'] },
@@ -60,7 +61,7 @@ var create = (req, res) => {
   db.Question.create({
     title: req.body.title,
     content: req.body.content,
-    author: req.body.author
+    author: res.locals.userID
   })
   .then(question => {
     res.send(question)
@@ -77,7 +78,7 @@ var edit = (req, res) => {
       {
         title: req.body.title || question.title,
         content: req.body.content || question.content,
-        author: req.body.author || question.author,
+        author: res.locals.userID || question.author,
       }
     )
     .then(() => res.send("user updated"))
