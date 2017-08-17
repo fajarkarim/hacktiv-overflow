@@ -14,7 +14,7 @@ Vue.prototype.$http = axios
 Vue.use(BootstrapVue)
 
 Vue.prototype.$http = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL: 'http://localhost:3000/api'
 })
 
 // Vue.use(ElementUI)

@@ -3,6 +3,12 @@ var db = require('../models')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 
+var getUserInfo = (req, res) => {
+  db.User.findById(res.locals.userID)
+  .then(user => res.send({id: user.id, name: user.name}))
+  .catch(err => res.status(500).send(err))
+}
+
 var getAll = (req, res) => {
   db.User.findAll({
     include: [
@@ -99,7 +105,7 @@ var register = (req, res) => {
     console.log(`------- masuk created`);
     let status = created[1]
     if (!status) {
-      res.send("email already used")
+      res.send({ err: "email already used"})
     }
     res.send(created)
   })
@@ -136,6 +142,7 @@ var login = (req, res) => {
 module.exports = {
   getAll,
   getOne,
+  getUserInfo,
   edit,
   remove,
   register,

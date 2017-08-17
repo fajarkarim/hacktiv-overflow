@@ -34,7 +34,7 @@ var getOne = (req, res) => {
       where: { id: req.params.id },
       include: [
         { model: db.User, attributes: ['name']},
-        { model: db.QuestionVote, attributes: ['voter', 'type'] },
+        { model: db.QuestionVote, attributes: ['id', 'voter', 'type'] },
         {
           model: db.Answer, attributes: ['content'] ,include: [
             {

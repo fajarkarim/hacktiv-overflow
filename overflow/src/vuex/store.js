@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import createPersistedState from 'vuex-persistedstate'
+import router from '../router/index'
 
 Vue.use(Vuex)
 axios.defaults.baseURL = 'http://localhost:3000/api'
@@ -111,9 +112,42 @@ const store = new Vuex.Store({
         console.log(err.message)
       })
     },
+    postQVote ({ dispatch }, payload) {
+      axios.post('/q_votes', {
+        type: payload.type,
+        questionID: payload.questionID
+      }, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
+      .then(created => {
+        console.log(created)
+        dispatch('getOneQuestion', {
+          questID: payload.questionID
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    },
+    updateQVote ({ dispatch }, payload) {
+      axios.put(`/q_votes/${payload.qvID}`, {
+        type: payload.type
+      }, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
+      .then(updated => {
+        console.log(updated)
+        dispatch('getOneQuestion', {
+          questID: payload.questionID
+        })
+      })
+      .catch(err => console.log(err))
+    },
     doRegister ({ commit }, payload) {
-      console.log(payload)
-      console.log(`------ masuk atas reg`)
       axios.post(`/users/register`, {
         email: payload.email,
         name: payload.name,
@@ -121,11 +155,9 @@ const store = new Vuex.Store({
         password: payload.password
       })
       .then(({ data }) => {
-        console.log(`--------- masuk register`)
-        console.log(data)
+        data.hasOwnProperty('err') ? console.log(data.err) : router.push('/login')
       })
       .catch(err => {
-        console.log(`---- masuk err`)
         console.log(err.message)
       })
     },

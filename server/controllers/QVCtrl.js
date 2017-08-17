@@ -2,24 +2,16 @@
 var db = require('../models')
 
 var create = (req, res) => {
-  db.QuestionVote.findOrCreate({
-    where: { voter: req.body.voter_id },
-    defaults: {
-      type: req.body.type,
-      voter: res.locals.userID,
-      QuestionId: req.body.question_id
-    }
+  db.QuestionVote.create({
+    type: req.body.type,
+    voter: res.locals.userID,
+    QuestionId: req.body.questionID
   })
   .then(created => {
-    let found = created[1]
-    let vote = created[0]
-    if (!found) {
-      res.send("question vote created")
-    }
-    res.send(vote)
+    res.send(created)
   })
   .catch(err => {
-    res.send(err)
+    res.status(500).send(err)
   })
 }
 //

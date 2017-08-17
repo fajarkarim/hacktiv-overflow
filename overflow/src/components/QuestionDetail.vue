@@ -3,19 +3,22 @@
     <div class="row">
       <div class="col-9">
         <div class="row">
+
           <div class="col-1">
             <div class="row pt-4">
-              <div class="col-12">
+              <div @click="QVote('up')" class="col-12">
                 <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i>
               </div>
               <div class="col-12 pl-3 pt-1">
                 <h3>0</h3>
               </div>
-              <div class="col-12">
+              <div @click="QVote('down')" class="col-12">
                 <i class="fa fa-arrow-down fa-lg" aria-hidden="true"></i>
               </div>
             </div>
           </div>
+          <!-- question votes -->
+
           <div class="col">
             <div class="card">
               <div class="card-block">
@@ -31,6 +34,7 @@
             </div>
           </div>
         </div>
+        <!-- question content -->
 
         <div v-for="answer in oneQuestion.Answers" class="row">
             <div class="col-1">
@@ -56,8 +60,10 @@
               </div>
             </div>
         </div>
+        <!-- answers content  -->
 
         <PostAnswer :questid="questid"/>
+        <!-- post answer box -->
       </div>
       <Sidebar class="col"></Sidebar>
     </div>
@@ -89,6 +95,42 @@ export default {
       this.$store.dispatch('getOneQuestion', {
         questID: this.questid
       })
+    },
+    postQVote (val) {
+      this.$store.dispatch('postQVote', {
+        type: val,
+        questionID: this.questid
+      })
+    },
+    updateQVote (val, qvid) {
+      this.$store.dispatch('updateQVote', {
+        type: val,
+        qvID: qvid,
+        questionID: this.questid
+      })
+    },
+    QVote (val) {
+      this.$http.get('/users/info', {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
+      .then(({data}) => {
+        let qVotes = this.oneQuestion.QuestionVotes
+        if (qVotes.length === 0) {
+          this.postQVote(val)
+        } else {
+          let found = qVotes.find(qv => qv.voter === data.id)
+          if (found === undefined) {
+            console.log(`------ masuk not found`)
+            this.postQVote(val)
+          } else {
+            console.log('masuk found')
+            this.updateQVote(val, found.id)
+          }
+        }
+      })
+      .catch(err => console.log(err))
     }
   },
   created () {

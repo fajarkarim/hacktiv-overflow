@@ -5,6 +5,7 @@ var auth = require('../helpers/auth')
 
 /* GET users listing. */
 router.get('/', userCtrl.getAll);
+router.get('/info', auth.user, userCtrl.getUserInfo)
 router.get('/:id', auth.user, userCtrl.getOne);
 router.post('/login', userCtrl.login);
 // router.post('/', userCtrl.create);
