@@ -2,13 +2,10 @@
 var db = require('../models')
 
 var create = (req, res) => {
-  db.AnswerVote.findOrCreate({
-    where: { voter: req.body.voter_id },
-    defaults: {
-      type: req.body.type,
-      voter: res.locals.userID,
-      AnswerId: req.body.answer_id
-    }
+  db.AnswerVote.create({
+    type: req.body.type,
+    voter: res.locals.userID,
+    AnswerId: req.body.answerID
   })
   .then(answer => {
     res.send(answer)
@@ -24,7 +21,6 @@ var edit = (req, res) => {
     qa.update(
       {
         type: req.body.type || qa.type,
-        AnswerId: req.body.answer_id || qa.id
       }
     )
     .then(() => res.send(`changed to ${req.body.type}`))

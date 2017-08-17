@@ -36,9 +36,9 @@ var getOne = (req, res) => {
         { model: db.User, attributes: ['name']},
         { model: db.QuestionVote, attributes: ['id', 'voter', 'type'] },
         {
-          model: db.Answer, attributes: ['content'] ,include: [
+          model: db.Answer, attributes: ['id','content'] ,include: [
             {
-              model: db.AnswerVote, attributes: ['voter', 'type'],
+              model: db.AnswerVote, attributes: ['id', 'voter', 'type'],
               include: [{ model: db.User, attributes: ['name']}]
             },
             {

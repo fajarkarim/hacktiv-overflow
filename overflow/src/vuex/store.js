@@ -108,7 +108,6 @@ const store = new Vuex.Store({
         })
       })
       .catch(err => {
-        console.log(`------- masuk errror`)
         console.log(err.message)
       })
     },
@@ -122,7 +121,6 @@ const store = new Vuex.Store({
         }
       })
       .then(created => {
-        console.log(created)
         dispatch('getOneQuestion', {
           questID: payload.questionID
         })
@@ -140,12 +138,46 @@ const store = new Vuex.Store({
         }
       })
       .then(updated => {
-        console.log(updated)
         dispatch('getOneQuestion', {
           questID: payload.questionID
         })
       })
       .catch(err => console.log(err))
+    },
+    postAVote ({ dispatch }, payload) {
+      axios.post(`/a_votes/`, {
+        type: payload.type,
+        answerID: payload.answerID
+      }, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
+      .then(({ data }) => {
+        console.log(data)
+        dispatch('getOneQuestion', {
+          questID: payload.questionID
+        })
+      })
+      .catch(err => console.log(err))
+    },
+    updateAVote ({ dispatch }, payload) {
+      axios.put(`/a_votes/${payload.avID}`, {
+        type: payload.type
+      }, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
+      .then(({ data }) => {
+        console.log(data)
+        dispatch('getOneQuestion', {
+          questID: payload.questionID
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
     },
     doRegister ({ commit }, payload) {
       axios.post(`/users/register`, {

@@ -10,7 +10,7 @@
                 <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i>
               </div>
               <div class="col-12 pl-3 pt-1">
-                <h3>0</h3>
+                <h3>{{ totalQVotes }}</h3>
               </div>
               <div @click="QVote('down')" class="col-12">
                 <i class="fa fa-arrow-down fa-lg" aria-hidden="true"></i>
@@ -29,38 +29,20 @@
               </div>
             </div>
             <div class="">
-              <h4 class="pt-3"> {{ oneQuestion.Answers.length }} Answers {{ oneQuestion.QuestionVotes.length }} votes</h4>
+              <h4 class="pt-3"> {{ oneQuestion.Answers.length }} Answers</h4>
               <hr class="separator">
             </div>
           </div>
         </div>
         <!-- question content -->
+        <AnswerDetail
+          v-for="answer in oneQuestion.Answers"
+          :answer="answer"
+          :questid="questid"
+          :key="answer.id">
+        </AnswerDetail>
 
-        <div v-for="answer in oneQuestion.Answers" class="row">
-            <div class="col-1">
-              <div class="row pt-4">
-                <div class="col-12">
-                  <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i>
-                </div>
-                <div class="col-12 pl-3 pt-1">
-                  <h3>0</h3>
-                </div>
-                <div class="col-12">
-                  <i class="fa fa-arrow-down fa-lg" aria-hidden="true"></i>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card mt-4 ">
-                <div class="card-block">
-                  <p class="card-text">{{answer.content}}</p>
-                  <p class="text-right">oleh: {{ answer.User.name }}</p>
-                  <hr>
-                </div>
-              </div>
-            </div>
-        </div>
-        <!-- answers content  -->
+        <!-- answers -->
 
         <PostAnswer :questid="questid"/>
         <!-- post answer box -->
@@ -73,10 +55,12 @@
 <script>
 import Sidebar from '@/components/Sidebar'
 import PostAnswer from '@/components/PostAnswer'
+import AnswerDetail from '@/components/AnswerDetail'
 export default {
   components: {
     Sidebar,
-    PostAnswer
+    PostAnswer,
+    AnswerDetail
   },
   props: ['questid'],
   name: 'QuestionDetail',
@@ -88,6 +72,15 @@ export default {
   computed: {
     oneQuestion () {
       return this.$store.state.oneQuestion
+    },
+    upQVotes () {
+      return this.oneQuestion.QuestionVotes.filter(qv => qv.type === 'up')
+    },
+    downQVotes () {
+      return this.oneQuestion.QuestionVotes.filter(qv => qv.type === 'down')
+    },
+    totalQVotes () {
+      return this.upQVotes.length - this.downQVotes.length
     }
   },
   methods: {
@@ -102,10 +95,10 @@ export default {
         questionID: this.questid
       })
     },
-    updateQVote (val, qvid) {
+    updateQVote (val, qvID) {
       this.$store.dispatch('updateQVote', {
         type: val,
-        qvID: qvid,
+        qvID: qvID,
         questionID: this.questid
       })
     },
@@ -122,10 +115,8 @@ export default {
         } else {
           let found = qVotes.find(qv => qv.voter === data.id)
           if (found === undefined) {
-            console.log(`------ masuk not found`)
             this.postQVote(val)
           } else {
-            console.log('masuk found')
             this.updateQVote(val, found.id)
           }
         }
