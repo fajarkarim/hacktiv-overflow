@@ -14,6 +14,7 @@ const store = new Vuex.Store({
       status: '',
       name: ''
     },
+    editAnswerContent: '',
     usersQuestions: [],
     questions: [],
     oneQuestion: {}
@@ -65,7 +66,6 @@ const store = new Vuex.Store({
       })
     },
     getOneQuestion ({ commit }, payload) {
-      console.log(`----- masuk one question`)
       axios.get(`/questions/${payload.questID}`)
       .then(({ data }) => {
         commit('setOneQuestion', data)
@@ -178,6 +178,20 @@ const store = new Vuex.Store({
       .catch(err => {
         console.log(err)
       })
+    },
+    deleteQuestion ({ dispatch }, payload) {
+      axios.delete(`/questions/${payload.questID}`, {
+        headers: {
+          token: localStorage.getItem('overflowToken')
+        }
+      })
+      .then(removed => {
+        console.log(removed)
+        dispatch('getOneQuestion', {
+          questID: payload.questID
+        })
+      })
+      .catch(err => console.log(err))
     },
     doRegister ({ commit }, payload) {
       axios.post(`/users/register`, {

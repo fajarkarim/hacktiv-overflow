@@ -22,6 +22,11 @@
           <div class="col">
             <div class="card">
               <div class="card-block">
+                <template v-if="editStatus">
+                  <b-btn v-b-modal.modal1 class="float-right" variant="link"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b-btn>
+                  <b-btn :to="'/questions/'+ oneQuestion.id +'/edit'" class="float-right" variant="link"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></b-btn>
+                  <DeleteQuestionModal :question="oneQuestion"/>
+                </template>
                 <h3 class="card-title">{{oneQuestion.title}}</h3>
                 <small>posted by {{ oneQuestion.User.name }}</small>
                 <hr>
@@ -41,9 +46,9 @@
           :questid="questid"
           :key="answer.id">
         </AnswerDetail>
+        <EditAnswerModal/>
 
         <!-- answers -->
-
         <PostAnswer :questid="questid"/>
         <!-- post answer box -->
       </div>
@@ -56,22 +61,24 @@
 import Sidebar from '@/components/Sidebar'
 import PostAnswer from '@/components/PostAnswer'
 import AnswerDetail from '@/components/AnswerDetail'
+import EditAnswerModal from '@/components/EditAnswerModal'
+import DeleteQuestionModal from '@/components/DeleteQuestionModal'
 export default {
   components: {
     Sidebar,
     PostAnswer,
-    AnswerDetail
+    AnswerDetail,
+    EditAnswerModal,
+    DeleteQuestionModal
   },
   props: ['questid'],
   name: 'QuestionDetail',
-  data () {
-    return {
-      msg: 'jajaja'
-    }
-  },
   computed: {
     oneQuestion () {
       return this.$store.state.oneQuestion
+    },
+    editStatus () {
+      return this.oneQuestion.User.name === this.$store.state.login.name
     },
     upQVotes () {
       return this.oneQuestion.QuestionVotes.filter(qv => qv.type === 'up')

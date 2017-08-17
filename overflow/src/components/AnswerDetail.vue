@@ -18,6 +18,11 @@
       <div class="col">
         <div class="card mt-4 ">
           <div class="card-block">
+            <template>
+              <b-btn v-b-modal.editAnswer class="float-right" variant="link"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b-btn>
+              <i class="fa fa-trash float-right pl-2" aria-hidden="true"></i>
+              <i class="fa fa-pencil float-right" aria-hidden="true"></i>
+            </template>
             <p class="card-text">{{answer.content}}</p>
             <p class="text-right">oleh: {{ answer.User.name }}</p>
             <hr>

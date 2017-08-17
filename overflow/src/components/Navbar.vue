@@ -4,12 +4,14 @@
     <b-nav-toggle target="nav_collapse"></b-nav-toggle>
 
     <div class="container">
-      <router-link to="/">HacktivOver</router-link>
+      <b-nav is-nav-bar>
+        <b-nav-item to="/">HacktivOver</b-nav-item>
+      </b-nav>
 
       <b-collapse is-nav id="nav_collapse">
 
         <b-nav is-nav-bar>
-          <b-nav-item to="/questions">Questions</b-nav-item>
+          <b-nav-item to="/">Questions</b-nav-item>
         </b-nav>
 
         <!-- Right alignd nav items -->

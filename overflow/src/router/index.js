@@ -5,6 +5,8 @@ import Register from '@/components/Register'
 import Login from '@/components/Login'
 import PostQuestion from '@/components/PostQuestion'
 import QuestionDetail from '@/components/QuestionDetail'
+import EditQuestion from '@/components/EditQuestion'
+import DeleteQuestionModal from '@/components/DeleteQuestionModal'
 
 Vue.use(Router)
 
@@ -22,6 +24,11 @@ export default new Router({
       component: Login
     },
     {
+      path: '/delete',
+      name: 'Delete',
+      component: DeleteQuestionModal
+    },
+    {
       path: '/register',
       name: 'Register',
       component: Register
@@ -32,7 +39,19 @@ export default new Router({
       component: PostQuestion
     },
     {
+      path: '/questions/:questid/edit',
+      name: 'edit',
+      component: EditQuestion,
+      props: true
+    },
+    {
       path: '/questions/:questid',
+      children: [
+        {
+          path: 'edit',
+          component: EditQuestion
+        }
+      ],
       name: 'OneArticle',
       component: QuestionDetail,
       props: true
