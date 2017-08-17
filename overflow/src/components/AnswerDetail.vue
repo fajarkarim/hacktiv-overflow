@@ -19,7 +19,7 @@
         <div class="card mt-4 ">
           <div class="card-block">
             <template>
-              <b-btn v-b-modal.editAnswer class="float-right" variant="link"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b-btn>
+              <b-btn v-b-modal.editAnswer @click="storeAnswer(answer)" class="float-right" variant="link"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></b-btn>
               <i class="fa fa-trash float-right pl-2" aria-hidden="true"></i>
               <i class="fa fa-pencil float-right" aria-hidden="true"></i>
             </template>
@@ -50,6 +50,10 @@ export default {
     }
   },
   methods: {
+    storeAnswer (answer) {
+      console.log(answer.content)
+      this.$store.commit('setStoreAnswer', answer.content)
+    },
     postAVote (val, answerID) {
       this.$store.dispatch('postAVote', {
         type: val,

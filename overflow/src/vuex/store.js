@@ -14,12 +14,15 @@ const store = new Vuex.Store({
       status: '',
       name: ''
     },
-    editAnswerContent: '',
+    storeAnswer: '',
     usersQuestions: [],
     questions: [],
     oneQuestion: {}
   },
   mutations: {
+    setStoreAnswer (state, payload) {
+      state.storeAnswer = payload
+    },
     setUsersQuestions (state, payload) {
       state.usersQuestions = payload
     },

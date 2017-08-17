@@ -5,7 +5,7 @@
 
     <b-form-fieldset
         label="Answer">
-      <textarea v-model="content" class="form-control" name="name" rows="8" cols="80"></textarea>
+      <textarea v-model="answer" class="form-control" name="name" rows="8" cols="80"></textarea>
     </b-form-fieldset>
 
   </b-modal>
@@ -14,10 +14,14 @@
 
 <script>
 export default {
-  props: ['answer'],
   data () {
     return {
-      content: this.answer.content
+      content: 'sss'
+    }
+  },
+  computed: {
+    answer () {
+      return this.$store.state.storeAnswer
     }
   },
   methods: {
