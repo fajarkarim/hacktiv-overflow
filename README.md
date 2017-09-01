@@ -46,10 +46,10 @@ DELETE | ```/api/questions/:id```| Authorized user only
 Method | url | Description 
 ------------ | ------------- | -----
 GET | ```/api/answer``` | public
-GET | ```/api/answer/1```| public
+GET | ```/api/answer/:id```| public
 POST | ```/api/answer/```| Authorized user only
-PUT | ```/api/answer/1```| Authorized user only
-DELETE | ```/api/answer/1```| Authorized user only
+PUT | ```/api/answer/:id```| Authorized user only
+DELETE | ```/api/answer/:id```| Authorized user only
 
 
 ### Question Vote end point
